@@ -41,19 +41,20 @@ class GroceryList < Vue
 end
 
 class ComputedReverse < Vue
-  data :original_message, 'this is the original message'
+  data :message, 'this is the original message'
 
-  def set_caca
-    self.original_message = 'caca'
+  def change_message
+    self.message = 'this is another message'
   end
 
   computed
 
   def reversed_message_computed
-    original_message.reverse
+    message.reverse
   end
 end
 
+# install the opal bowser gem in order to make this work
 class Questions < Vue
   data :question, ''
   data :answer, 'I cannot give you an answer until you ask a question!'
@@ -79,8 +80,12 @@ end
 
 class ClickCounter < VueComponent
   data :count, 0
-  template '<button v-on:click="count++"> You clicked {{ count }} times</button>'
+  template '#increment-template'
   tag_name 'click-counter'
+
+  def increment_count
+    self.count += 1
+  end
 end
 
 class CounterEl < Vue
