@@ -60,18 +60,13 @@ class Vue
     end
   end
 
-  def initialize(element = nil, data_as_function: false)
-    @data_as_function = data_as_function
-    @native = js_initialize
+  def initialize(element = nil, js_object: nil)
+    @native = js_object || `new Vue(#{vue_options.to_n})`
 
     element && mount(element)
 
     define_lifecycle_callbacks
     define_watchers
-  end
-
-  def js_initialize
-    `new Vue(#{vue_options.to_n})`
   end
 
   def mount(element)
@@ -80,15 +75,15 @@ class Vue
 
   def vue_options
     {
-      data: @data_as_function ? -> { self.class._data.to_n } : self.class._data,
+      data: self.class._data.to_n,
       methods: methods_as_procs(:public),
       computed: methods_as_procs(:computed)
     }
   end
 
   def define_lifecycle_callbacks
-    @native.JS[:$created] = instance_eval(&self.class._created),
-    @native.JS[:$mounted] = instance_eval(&self.class._mounted),
+    @native.JS[:$created] = instance_eval(&self.class._created)
+    @native.JS[:$mounted] = instance_eval(&self.class._mounted)
     @native.JS[:$destroyed] = instance_eval(&self.class._destroyed)
   end
 

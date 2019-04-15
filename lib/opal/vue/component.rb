@@ -27,19 +27,38 @@ class VueComponent < Vue
     end
 
     def activate
-      new(data_as_function: true)
+      new
     end
   end
 
-  def js_initialize
-    `Vue.component(#{self.class._tag_name}, #{vue_options.to_n})`
+  def initialize
+    initializer = -> (vue) { super(js_object: vue) }
+
+    options = vue_options.to_n
+
+    # NOTE: this was taken exactly as the way was done here: https://github.com/arika/opal-vue-trial/blob/master/app/vue.rb.
+    # This is the only way to bind methods and computed methods with VueComponent, so it
+    # can access data. Im not really sure why this works
+    %x{
+      options['beforeCreate'] = function() {
+        initializer(this);
+
+        this.$options['methods'] = #{methods_as_procs(:public).to_n}
+        this.$options['computed'] = #{methods_as_procs(:computed).to_n}
+      };
+
+      Vue.component(#{self.class._tag_name}, #{options});
+    }
   end
 
   def vue_options
     super.merge(
       {
         props: self.class._props,
-        template: self.class._template
+        template: self.class._template,
+        methods: {},
+        computed: {},
+        data: -> { self.class._data.to_n }
       }
     )
   end
