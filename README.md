@@ -1,4 +1,4 @@
-### Vue.rb
+# Vue.rb
 
 Lets you write Vue.js code in Ruby!!!
 
