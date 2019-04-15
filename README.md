@@ -1,3 +1,5 @@
+### Vue.rb
+
 Lets you write Vue.js code in Ruby!!!
 
 ```ruby
@@ -34,7 +36,7 @@ Require both js and Ruby files in `application.js.rb`
 require 'opal'
 
 # require javascript before ruby code
-require 'vue/dist/vue.js
+require 'vue/dist/vue.js'
 require 'vue.rb'
 ```
 
@@ -72,4 +74,4 @@ it a bit and put it into a gem :blush:
 
 ## Contributing
 
-This is not a complete implementation of the API, so if something is missing please help with a PR :wink:
+This is not a complete implementation of the API, so if something is missing please do help with PR's
