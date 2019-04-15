@@ -22,7 +22,9 @@ ReverseMessage.new('#app')
 ## Installation (Ruby on Rails)
 
 Install `gem 'opal-rails'` for compiling Js to Ruby
+</br>
 Install `gem 'vue.rb', git: 'https://github.com/merongivian/vue.rb'`
+</br>
 Install `vue.js` trough yarn
 ```
 bash> yarn add vue
