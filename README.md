@@ -27,7 +27,7 @@ Install `gem 'opal-rails'` for compiling Js to Ruby
 </br>
 Install `gem 'vue.rb', git: 'https://github.com/merongivian/vue.rb'`
 </br>
-Install `vue.js` trough yarn
+Install `vue.js` through yarn
 ```
 bash> yarn add vue
 ```
