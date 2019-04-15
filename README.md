@@ -38,14 +38,14 @@ require 'vue.rb'
 
 ## Adding Vue code
 
-- Make sure your vue code loads after the page is loaded
+Make sure your vue code loads after the page is loaded
 ```ruby
 # config/initializers/assets.rb
 
 Rails.application.config.assets.precompile += %w(my_vue_code.js.rb) # should be in app/assets/javascripts
 ```
 ```html
-<!–– application.html.erb ––>
+<!-- application.html.erb -->
 
 <!DOCTYPE html>
 <html>
@@ -58,6 +58,10 @@ Rails.application.config.assets.precompile += %w(my_vue_code.js.rb) # should be 
   <%= javascript_include_tag 'my_vue_code' %>
 </html>
 ```
+
+## More examples
+
+check the [examples section](https://github.com/merongivian/vue.rb/tree/master/examples)
 
 ## Credits
 
