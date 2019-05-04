@@ -23,16 +23,22 @@ ReverseMessage.new('#app')
 
 ## Installation (Ruby on Rails)
 
-Install `gem 'opal-rails'` for compiling Js to Ruby
-</br>
-Install `gem 'vue.rb', git: 'https://github.com/merongivian/vue.rb'`
-</br>
 Install `vue.js` through yarn
 ```
-bash> yarn add vue
+$ yarn add vue
 ```
-Require both js and Ruby files in `application.js.rb`
+Add the following gems in your Gemfile
+
 ```ruby
+  gem 'opal-rails'
+  gem 'vue.rb', git: 'https://github.com/merongivian/vue.rb'
+```
+
+and run `bundle exec install`
+
+Require both Javascript and Ruby files in `application.js.rb`
+```ruby
+# Javascript to Ruby compiler
 require 'opal'
 
 # require javascript before ruby code
