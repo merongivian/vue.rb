@@ -4,16 +4,11 @@ class VueComponent < Vue
       super
 
       sub_class.class_eval do
-        @_props = []
         @_template = ''
         @_tag_name = ''
 
         class << self
-          attr_reader :_props, :_template, :_tag_name
-
-          def props(*the_props)
-            @_props += the_props
-          end
+          attr_reader :_template, :_tag_name
 
           def template(the_template)
             @_template = the_template
@@ -54,7 +49,6 @@ class VueComponent < Vue
   def vue_options
     super.merge(
       {
-        props: self.class._props,
         template: self.class._template,
         methods: {},
         computed: {},

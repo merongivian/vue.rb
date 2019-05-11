@@ -5,6 +5,7 @@ class Vue
     def inherited(sub_class)
       sub_class.class_eval do
         @_data = {}
+        @_props = []
         @_created = -> {}
         @_mounted = -> {}
         @_destroyed = -> {}
@@ -14,12 +15,20 @@ class Vue
         @_computed = []
 
         class << self
-          attr_reader :_data, :_methods, :_created, :_mounted, :_destroyed, :_computed, :_watchers
+          attr_reader :_data, :_props, :_methods, :_created, :_mounted, :_destroyed, :_computed, :_watchers
 
           def data(the_name, the_value)
             @_data.merge!({ the_name => the_value })
 
-            native_accessor(the_name)
+            _ignore_method_added { native_accessor(the_name) }
+          end
+
+          def props(*the_props)
+            @_props += the_props
+
+            _ignore_method_added do
+              the_props.each { |prop| native_accessor(prop) }
+            end
           end
 
           def method_added(name)
@@ -32,6 +41,14 @@ class Vue
             elsif @_method_mode == :computed
               @_computed << name
             end
+          end
+
+          def _ignore_method_added
+            save_method_mode = @_method_mode
+            @_method_mode = :ignore
+            yield
+          ensure
+            @_method_mode = save_method_mode
           end
 
           def computed
@@ -76,6 +93,7 @@ class Vue
   def vue_options
     {
       data: self.class._data.to_n,
+      props: self.class._props,
       methods: methods_as_procs(:public),
       computed: methods_as_procs(:computed)
     }
