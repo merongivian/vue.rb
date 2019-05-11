@@ -56,6 +56,10 @@ class Vue
             @_method_mode = :computed
           end
 
+          def private
+            @_method_mode = :private
+          end
+
           def created(&block)
             @_created = block
           end
@@ -95,7 +99,8 @@ class Vue
           # accumulates s in all ancestors until it gets to
           # the root_class, this is usefull when creating
           # instances or components that inherits from
-          # sub-(instances/components)
+          # sub-(instances/components). It also prevents from
+          # adding methods added in the base vue classes
           def _inject_ancestor(initial)
             ancestors.inject(initial) do |s, cls|
               break s if cls == @_root_class
