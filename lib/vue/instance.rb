@@ -27,7 +27,7 @@ class Vue
             @_props += the_props
 
             _ignore_method_added do
-              the_props.each { |prop| native_accessor(prop) }
+              the_props.each(&method(:native_accessor))
             end
           end
 
