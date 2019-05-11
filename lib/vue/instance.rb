@@ -4,6 +4,7 @@ class Vue
   class << self
     def inherited(sub_class)
       sub_class.class_eval do
+        @_root_class = ::Vue
         @_data = {}
         @_props = []
         @_created = -> {}
@@ -15,7 +16,7 @@ class Vue
         @_computed = []
 
         class << self
-          attr_reader :_data, :_props, :_methods, :_created, :_mounted, :_destroyed, :_computed, :_watchers
+          attr_reader :_props, :_created, :_mounted, :_destroyed, :_watchers
 
           def data(the_name, the_value)
             @_data.merge!({ the_name => the_value })
@@ -71,6 +72,38 @@ class Vue
             raise "data #{data_name} is not defined" unless @_data.include?(data_name)
 
             @_watchers.merge!({ data_name => block })
+          end
+
+          def _methods
+            _inject_ancestor(@_methods.dup) do |s, cls|
+              s << cls._methods
+            end
+          end
+
+          def _computed
+            _inject_ancestor(@_computed.dup) do |s, cls|
+              s << cls._computed
+            end
+          end
+
+          def _data
+            _inject_ancestor(@_data.dup) do |s, cls|
+              s.merge(cls._data)
+            end
+          end
+
+          # accumulates s in all ancestors until it gets to
+          # the root_class, this is usefull when creating
+          # instances or components that inherits from
+          # sub-(instances/components)
+          def _inject_ancestor(initial)
+            ancestors.inject(initial) do |s, cls|
+              break s if cls == @_root_class
+              next s if cls == self
+              next s unless cls.is_a?(Class)
+
+              yield(s, cls)
+            end
           end
         end
       end

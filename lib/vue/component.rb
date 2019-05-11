@@ -4,6 +4,7 @@ class VueComponent < Vue
       super
 
       sub_class.class_eval do
+        @_root_class = ::VueComponent
         @_template = ''
         @_tag_name = ''
 
