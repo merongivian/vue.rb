@@ -110,6 +110,13 @@ class Vue
               yield(s, cls)
             end
           end
+
+          def _vue_options
+            {
+              data: _data.to_n,
+              props: _props
+            }
+          end
         end
       end
     end
@@ -129,12 +136,12 @@ class Vue
   end
 
   def vue_options
-    {
-      data: self.class._data.to_n,
-      props: self.class._props,
-      methods: methods_as_procs(:public),
-      computed: methods_as_procs(:computed)
-    }
+    self.class._vue_options.merge(
+      {
+        methods: methods_as_procs(:public),
+        computed: methods_as_procs(:computed)
+      }
+    )
   end
 
   def define_lifecycle_callbacks
