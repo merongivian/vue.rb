@@ -140,6 +140,11 @@ class Vue
     `#{@native}.$mount(element)`
   end
 
+  def emit(*args)
+    # using js apply because is the only way to pass array as arguments
+    @native.JS['$emit'].JS.apply(@native, args.map(&:to_n))
+  end
+
   def vue_options
     self.class._vue_options.merge(
       {
