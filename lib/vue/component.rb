@@ -32,29 +32,42 @@ class VueComponent < Vue
     end
 
     def activate
+      options = _vue_options.to_n
+      init_in_before_create(options)
+
+      `Vue.component(#{_tag_name}, #{options});`
+    end
+
+    def to_h
+      options = new.vue_options.to_n
+      init_in_before_create(options)
+      options
+    end
+
+    # NOTE: this was taken exactly as the way was it done here: https://github.com/arika/opal-vue-trial/blob/master/app/vue.rb.
+    # This is the only way to bind methods and computed methods with VueComponent, so it
+    # can access data. Im not 100% sure why this works
+    def init_in_before_create(options)
       initializer = -> (vue) { new(vue) }
 
-      options = _vue_options.to_n
-
-      # NOTE: this was taken exactly as the way was done here: https://github.com/arika/opal-vue-trial/blob/master/app/vue.rb.
-      # This is the only way to bind methods and computed methods with VueComponent, so it
-      # can access data. Im not really sure why this works
       %x{
         options['beforeCreate'] = function() {
           initializer(this);
         };
-
-        Vue.component(#{_tag_name}, #{options});
       }
     end
   end
 
-  def initialize(vue)
-    super(js_object: vue).tap do
-      %x{
-        vue.$options['methods'] = #{methods_as_procs(:public).to_n};
-        vue.$options['computed'] = #{methods_as_procs(:computed).to_n};
-      }
+  def initialize(vue = nil)
+    if vue
+      super(js_object: vue).tap do
+        %x{
+          vue.$options['methods'] = #{methods_as_procs(:public).to_n};
+          vue.$options['computed'] = #{methods_as_procs(:computed).to_n};
+        }
+      end
+    else
+      vue_options
     end
   end
 end

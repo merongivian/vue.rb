@@ -6,6 +6,7 @@ class Vue
       sub_class.class_eval do
         @_root_class = ::Vue
         @_data = {}
+        @_components = []
         @_props = []
         @_created = -> {}
         @_mounted = -> {}
@@ -16,12 +17,16 @@ class Vue
         @_computed = []
 
         class << self
-          attr_reader :_props, :_created, :_mounted, :_destroyed, :_watchers
+          attr_reader :_props, :_created, :_mounted, :_destroyed, :_watchers, :_components
 
           def data(the_name, the_value)
             @_data.merge!({ the_name => the_value })
 
             _ignore_method_added { native_accessor(the_name) }
+          end
+
+          def components(*the_components)
+            @_components = the_components
           end
 
           def props(*the_props)
@@ -139,7 +144,8 @@ class Vue
     self.class._vue_options.merge(
       {
         methods: methods_as_procs(:public),
-        computed: methods_as_procs(:computed)
+        computed: methods_as_procs(:computed),
+        components: create_components.to_n
       }
     )
   end
@@ -167,6 +173,12 @@ class Vue
 
     methods_names.each_with_object({}) do |method_name, methods_hash|
       methods_hash[method_name] = method(method_name).to_proc
+    end
+  end
+
+  def create_components
+    self.class._components.each_with_object({}) do |component_class, components_hash|
+      components_hash[component_class._tag_name] = component_class.to_h
     end
   end
 end
