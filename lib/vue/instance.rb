@@ -1,3 +1,34 @@
+module Native
+  module Helpers
+    def native_prop_accessor(*names)
+      native_prop_reader(*names)
+      native_writer(*names)
+    end
+
+    def native_prop_reader(*names)
+      names.each do |name|
+        define_method name do
+          # this is only needed when accessing it from component hooks,
+          # which are instanciated inside the beforeCreate hook. It feels
+          # very wrong of course, instantiating hooks inside another hook
+          %x{
+            var propValue;
+
+            try {
+              propValue = #@native[#{name}]
+            }
+            catch {
+              propValue = #@native.$options.propsData[#{name}]
+            }
+          }
+
+          Native(`propValue`)
+        end
+      end
+    end
+  end
+end
+
 class Vue
   include Native
 
@@ -33,7 +64,7 @@ class Vue
             @_props += the_props
 
             _ignore_method_added do
-              the_props.each(&method(:native_accessor))
+              the_props.each(&method(:native_prop_accessor))
             end
           end
 
