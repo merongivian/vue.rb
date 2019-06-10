@@ -15,10 +15,10 @@ module Native
             var propValue;
 
             try {
-              propValue = #@native[#{name}]
+              propValue = #@native[#{name}];
             }
-            catch {
-              propValue = #@native.$options.propsData[#{name}]
+            catch(error) {
+              propValue = #@native.$options.propsData[#{name}];
             }
           }
 
