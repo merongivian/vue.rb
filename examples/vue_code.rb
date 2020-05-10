@@ -54,7 +54,7 @@ class ComputedReverse < Vue
   end
 end
 
-# install the opal bowser gem in order to make this work
+# install the opal browser gem in order to make this work
 class Questions < Vue
   data :question, ''
   data :answer, 'I cannot give you an answer until you ask a question!'
@@ -70,7 +70,7 @@ class Questions < Vue
       self.answer = 'Questions usually contain a question mark. ;-)'
     else
       self.answer = 'Thinking...'
-      Bowser::HTTP.fetch('https://yesno.wtf/api')
+      Browser::HTTP.fetch('https://yesno.wtf/api')
                   .then(&:json) # JSONify the response
                   .then { |response| self.answer = response[:answer] }
                   .catch { |exception| self.answer = exception.message }
